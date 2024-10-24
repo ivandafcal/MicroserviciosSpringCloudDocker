@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<title>Insert title here</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> 
+</head>
+<body>
+	<div ng-app="comunicacionApp" ng-controller="comunicacionController" class="container">
+	
+	<h1>Reservas</h1>
+	<div class="row">
+		
+		<div class="col-sm-6" style="border:solid 1px">
+		<br/>
+		
+		
+		<div class="form-group">
+		<label>Vuelo</label>
+		<select  ng-model="vuelo" ng-init="cargarVuelos()" class="form-control" style="width:80%">
+		
+			<option ng-repeat="v in vuelos" value="{{v.idvuelo}}">{{v.company}}</option>
+		
+		</select>
+		</div>
+		<div class="form-group">
+		<label>Hotel</label>
+		<select  ng-model="hotel" ng-init="cargarHoteles()" class="form-control" style="width:80%">
+		
+			<option ng-repeat="h in hoteles" value="{{h.idHotel}}">{{h.nombre}}</option>
+		
+		</select>
+		</div>
+		<div class="form-group">
+		<label>DNI</label>
+		<input type="number" min="0" ng-model="dni" class="form-control" style="width:80%"/>
+		</div>
+		<div class="form-group">
+		<label>Nombre</label>
+		<input type="text" min="0" ng-model="nombre" class="form-control" style="width:80%"/>
+		</div>
+		<br/>
+		<br/>
+		</div>
+		<div class="col-sm-6" style="border:solid 1px">
+		<div ng-show="mostrarTabla" >
+			<h3>Datos de la reserva</h3>
+			<hr>
+			<h4>Hotel: {{hotel}}</h4>
+			<h4>Numero de vuelo: {{vuelo}}</h4>
+			
+			
+		</div>
+		</div>
+	</div>
+		<br/>
+		
+		 <button ng-click="reservar()" type="button">Confirmar Reserva</button>
+		 <br/><br/><br/>
+		 <a href="reservas.html">Ver reservas</a>
+	
+	</div>
+	<script>
+		var app=angular.module("comunicacionApp",[]);
+		app.controller("comunicacionController",function($scope,$http){
+			$scope.vuelos=[];
+			$scope.hoteles=[];		
+			$scope.hotel;
+			$scope.vuelo;
+			$scope.nombre;
+			$scope.dni;		
+			$scope.mostrarTabla=true;			
+			$scope.cargarHoteles=function(){
+				
+				let url = "http://localhost:8000/hoteles";
+				//let url = "http://localhost:7000/shoteles/hoteles";
+				$http.get(url).then(function(res){
+					$scope.hoteles=res.data;
+								
+				});
+			}
+			$scope.cargarVuelos=function(){				
+				let url = "http://localhost:9000/vuelos/1";	
+				//let url = "http://localhost:7000/svuelos/vuelos/1";	
+				$http.get(url).then(function(res){
+					$scope.vuelos=res.data;								
+				});
+			}
+			$scope.reservar=function(){
+				let url="http://localhost:10000/reserva/1";
+				//let url="http://localhost:7000/sreservas/reserva/1";
+				let ob=new Object();
+				ob.nombre=$scope.nombre;
+				ob.dni=$scope.dni;
+				ob.hotel=$scope.hotel;
+				ob.vuelo=$scope.vuelo;
+				$http.post(url,ob);
+			
+			};
+		});
+	
+	</script>
+</body>
+</html>
